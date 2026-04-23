@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Converse_NMCNPM.Models.KhachHang>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TenKH)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SdtKH)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiaChiKH)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenKH)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SdtKH)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiaChiKH)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.MaKH">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

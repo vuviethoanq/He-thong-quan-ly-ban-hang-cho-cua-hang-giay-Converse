@@ -1,0 +1,72 @@
+﻿@model Converse_NMCNPM.Models.DonHang
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    var chiTietDonHangs = ViewBag.ChiTietDonHangs as List<Converse_NMCNPM.Models.ChiTietDonHang>;
+}
+
+<h1>Chi tiết đơn hàng</h1>
+
+<div class="card p-4 mt-3">
+    <h4 class="mb-3">Thông tin đơn hàng</h4>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-2">Ngày tạo</dt>
+        <dd class="col-sm-10">@Model.NgayTao.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+
+        <dt class="col-sm-2">Tổng tiền</dt>
+        <dd class="col-sm-10">@Model.TongTien.ToString("N0") VNĐ</dd>
+
+        <dt class="col-sm-2">Khách hàng</dt>
+        <dd class="col-sm-10">
+            @(Model.KhachHang != null ? Model.KhachHang.TenKH + " (" + Model.KhachHang.MaKH + ")" : Model.MaKH)
+        </dd>
+
+        <dt class="col-sm-2">Nhân viên</dt>
+        <dd class="col-sm-10">
+            @(Model.NhanVien != null ? Model.NhanVien.Username + " (" + Model.NhanVien.MaNV + ")" : Model.MaNV)
+        </dd>
+    </dl>
+
+    <h4 class="mt-4 mb-3">Danh sách sản phẩm đã mua</h4>
+
+    <table class="table table-bordered table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Mã CTDH</th>
+                <th>Sản phẩm</th>
+                <th>Màu sắc</th>
+                <th>Size</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (chiTietDonHangs != null && chiTietDonHangs.Any())
+            {
+                @foreach (var item in chiTietDonHangs)
+                {
+                    <tr>
+                        <td>@item.MaCTDH</td>
+                        <td>@(item.ChiTietSP?.SanPham?.TenSP ?? "")</td>
+                        <td>@item.ChiTietSP?.MauSP</td>
+                        <td>@item.ChiTietSP?.SizeSP</td>
+                        <td>@item.SoLuong</td>
+                        <td>@item.Gia.ToString("N0") VNĐ</td>
+                        <td>@((item.SoLuong * item.Gia).ToString("N0")) VNĐ</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center">Không có sản phẩm nào trong đơn hàng</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div>

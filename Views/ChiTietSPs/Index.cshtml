@@ -1,0 +1,273 @@
+﻿@model Converse_NMCNPM.Models.SanPham
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+
+    var variants = ViewBag.Variants as List<Converse_NMCNPM.Models.ChiTietSP> ?? new List<Converse_NMCNPM.Models.ChiTietSP>();
+    var colors = ViewBag.Colors as List<string> ?? new List<string>();
+    var defaultVariant = ViewBag.DefaultVariant as Converse_NMCNPM.Models.ChiTietSP;
+
+    if (defaultVariant == null && variants.Any())
+    {
+        defaultVariant = variants.First();
+    }
+
+    var defaultImage = !string.IsNullOrEmpty(defaultVariant?.HinhAnh)
+        ? Url.Content("~/images/products/" + defaultVariant.HinhAnh)
+        : Url.Content("~/images/products/no-image.png");
+
+    var defaultPrice = defaultVariant != null
+        ? Model.GiaSP * (100 - defaultVariant.Discount) / 100
+        : Model.GiaSP;
+
+    var uniqueImages = variants
+        .Where(x => !string.IsNullOrEmpty(x.HinhAnh))
+        .GroupBy(x => x.MauSP)
+        .Select(g => g.First())
+        .ToList();
+
+    var sizesOfDefaultColor = defaultVariant != null
+        ? variants.Where(x => x.MauSP == defaultVariant.MauSP).OrderBy(x => x.SizeSP).ToList()
+        : new List<Converse_NMCNPM.Models.ChiTietSP>();
+}
+
+<div class="product-detail-page">
+    <div class="product-detail-grid">
+        <div class="product-gallery">
+            <div class="product-thumbs">
+                @foreach (var item in uniqueImages)
+                {
+                    var thumbUrl = !string.IsNullOrEmpty(item.HinhAnh)
+                        ? Url.Content("~/images/products/" + item.HinhAnh)
+                        : Url.Content("~/images/products/no-image.png");
+
+                    <img src="@thumbUrl"
+                         class="thumb-img @(defaultVariant != null && item.MauSP == defaultVariant.MauSP ? "active" : "")"
+                         data-mactsp="@item.MaCTSP"
+                         data-img="@thumbUrl"
+                         data-color="@item.MauSP"
+                         data-size="@item.SizeSP"
+                         data-stock="@item.SoLuongTon"
+                         data-discount="@item.Discount"
+                         data-price="@((Model.GiaSP * (100 - item.Discount) / 100).ToString(CultureInfo.InvariantCulture))"
+                         alt="@Model.TenSP" />
+                }
+            </div>
+
+            <div class="product-main-image-box">
+                <img id="mainProductImage" src="@defaultImage" alt="@Model.TenSP" class="product-main-image" />
+            </div>
+        </div>
+
+        <div class="product-info">
+            <h1 class="detail-product-name">@Model.TenSP</h1>
+
+            <div class="detail-category">
+                @(Model.DanhMuc != null ? Model.DanhMuc.TenDM : "")
+            </div>
+
+            <div class="detail-price-wrap">
+                <div id="detailPrice" class="detail-price">
+                    @defaultPrice.ToString("N0")đ
+                </div>
+
+                @if (defaultVariant != null && defaultVariant.Discount > 0)
+                {
+                    <div id="detailOldPrice" class="detail-old-price">
+                        @Model.GiaSP.ToString("N0")đ
+                    </div>
+                }
+                else
+                {
+                    <div id="detailOldPrice" class="detail-old-price" style="display:none;">
+                        @Model.GiaSP.ToString("N0")đ
+                    </div>
+                }
+            </div>
+
+            <div class="detail-section">
+                <div class="section-label">Màu sắc</div>
+                <div class="color-options" id="colorOptions">
+                    @foreach (var color in colors)
+                    {
+                        var firstVariantOfColor = variants.FirstOrDefault(x => x.MauSP == color);
+                        var colorImage = firstVariantOfColor != null && !string.IsNullOrEmpty(firstVariantOfColor.HinhAnh)
+                            ? Url.Content("~/images/products/" + firstVariantOfColor.HinhAnh)
+                            : Url.Content("~/images/products/no-image.png");
+
+                        <button type="button"
+                                class="color-btn @(defaultVariant != null && color == defaultVariant.MauSP ? "active" : "")"
+                                data-color="@color"
+                                data-img="@colorImage">
+                            @color
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <div class="section-label">Size</div>
+                <div class="size-options" id="sizeOptions">
+                    @foreach (var item in sizesOfDefaultColor)
+                    {
+                        <button type="button"
+                                class="size-btn @(defaultVariant != null && item.MaCTSP == defaultVariant.MaCTSP ? "active" : "") @(item.SoLuongTon <= 0 ? "disabled" : "")"
+                                data-mactsp="@item.MaCTSP"
+                                data-color="@item.MauSP"
+                                data-size="@item.SizeSP"
+                                data-stock="@item.SoLuongTon"
+                                data-discount="@item.Discount"
+                                data-price="@((Model.GiaSP * (100 - item.Discount) / 100).ToString(CultureInfo.InvariantCulture))"
+                                @(item.SoLuongTon <= 0 ? "disabled" : "")>
+                            EU @item.SizeSP
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <div class="section-label">Tồn kho</div>
+                <div id="stockInfo" class="stock-info">
+                    @(defaultVariant != null ? defaultVariant.SoLuongTon.ToString() : "0")
+                </div>
+            </div>
+
+            <form asp-controller="GioHang" asp-action="ThemVaoGio" method="post" class="order-box">
+                <input type="hidden" name="maCTSP" id="selectedMaCTSP" value="@(defaultVariant?.MaCTSP ?? "")" />
+
+                <div class="detail-section">
+                    <div class="section-label">Số lượng</div>
+                    <input type="number" name="soLuong" id="orderQuantity" class="order-qty-input" min="1" value="1" />
+                </div>
+
+            <button type="submit" class="btn-order-main">
+             Thêm vào giỏ hàng
+            </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const allVariants = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            variants.Select(x => new {
+                maCTSP = x.MaCTSP,
+                maSP = x.MaSP,
+                sizeSP = x.SizeSP,
+                mauSP = x.MauSP,
+                soLuongTon = x.SoLuongTon,
+                discount = x.Discount,
+                hinhAnh = x.HinhAnh,
+                giaSauGiam = Model.GiaSP * (100 - x.Discount) / 100
+            })
+        ));
+
+        const mainImage = document.getElementById("mainProductImage");
+        const priceEl = document.getElementById("detailPrice");
+        const oldPriceEl = document.getElementById("detailOldPrice");
+        const stockEl = document.getElementById("stockInfo");
+        const hiddenMaCTSP = document.getElementById("selectedMaCTSP");
+        const sizeOptions = document.getElementById("sizeOptions");
+        const quantityInput = document.getElementById("orderQuantity");
+        const originalPrice = @Model.GiaSP.ToString(CultureInfo.InvariantCulture);
+
+        function formatVND(value) {
+            return Number(value).toLocaleString("vi-VN") + "đ";
+        }
+
+        function renderSizesByColor(color) {
+            const filtered = allVariants
+                .filter(x => x.mauSP === color)
+                .sort((a, b) => a.sizeSP - b.sizeSP);
+
+            sizeOptions.innerHTML = "";
+
+            filtered.forEach((item, index) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "size-btn";
+                btn.textContent = "EU " + item.sizeSP;
+
+                if (item.soLuongTon <= 0) {
+                    btn.classList.add("disabled");
+                    btn.disabled = true;
+                }
+
+                if (index === 0) {
+                    btn.classList.add("active");
+                    updateSelectedVariant(item);
+                }
+
+                btn.addEventListener("click", function () {
+                    document.querySelectorAll(".size-btn").forEach(x => x.classList.remove("active"));
+                    btn.classList.add("active");
+                    updateSelectedVariant(item);
+                });
+
+                sizeOptions.appendChild(btn);
+            });
+        }
+
+        function updateSelectedVariant(item) {
+            hiddenMaCTSP.value = item.maCTSP;
+            stockEl.textContent = item.soLuongTon;
+            priceEl.textContent = formatVND(item.giaSauGiam);
+
+            if (Number(item.discount) > 0) {
+                oldPriceEl.style.display = "block";
+                oldPriceEl.textContent = formatVND(originalPrice);
+            } else {
+                oldPriceEl.style.display = "none";
+            }
+
+            if (item.hinhAnh) {
+                mainImage.src = "/images/products/" + item.hinhAnh;
+            }
+
+            quantityInput.max = item.soLuongTon > 0 ? item.soLuongTon : 1;
+            if (parseInt(quantityInput.value) > item.soLuongTon && item.soLuongTon > 0) {
+                quantityInput.value = item.soLuongTon;
+            }
+            if (item.soLuongTon <= 0) {
+                quantityInput.value = 1;
+            }
+        }
+
+        document.querySelectorAll(".thumb-img").forEach(img => {
+            img.addEventListener("click", function () {
+                const color = this.dataset.color;
+                mainImage.src = this.dataset.img;
+
+                document.querySelectorAll(".thumb-img").forEach(x => x.classList.remove("active"));
+                document.querySelectorAll(".color-btn").forEach(x => x.classList.remove("active"));
+
+                this.classList.add("active");
+
+                const colorBtn = document.querySelector(`.color-btn[data-color="${color}"]`);
+                if (colorBtn) colorBtn.classList.add("active");
+
+                renderSizesByColor(color);
+            });
+        });
+
+        document.querySelectorAll(".color-btn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const color = this.dataset.color;
+                const img = this.dataset.img;
+
+                document.querySelectorAll(".color-btn").forEach(x => x.classList.remove("active"));
+                document.querySelectorAll(".thumb-img").forEach(x => x.classList.remove("active"));
+
+                this.classList.add("active");
+                mainImage.src = img;
+
+                const thumb = document.querySelector(`.thumb-img[data-color="${color}"]`);
+                if (thumb) thumb.classList.add("active");
+
+                renderSizesByColor(color);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,150 @@
+﻿@model Converse_NMCNPM.Models.SanPham
+@using Converse_NMCNPM.Models
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+
+    var variants = ViewBag.Variants as List<ChiTietSP> ?? new List<ChiTietSP>();
+    var colors = ViewBag.Colors as List<string> ?? new List<string>();
+    var defaultVariant = ViewBag.DefaultVariant as ChiTietSP;
+
+    decimal basePrice = Model.GiaSP;
+    decimal currentPrice = basePrice;
+
+    if (defaultVariant != null)
+    {
+        currentPrice = basePrice * (100 - defaultVariant.Discount) / 100;
+    }
+
+    string mainImage = !string.IsNullOrEmpty(defaultVariant?.HinhAnh)
+        ? Url.Content("~/images/products/" + defaultVariant.HinhAnh)
+        : Url.Content("~/images/products/no-image.png");
+}
+
+<div class="product-detail-page">
+    <div class="product-detail-wrapper">
+
+        <div class="product-gallery">
+            <div class="thumb-list">
+                @foreach (var item in variants.Where(x => !string.IsNullOrEmpty(x.HinhAnh)))
+                {
+                    var imgUrl = Url.Content("~/images/products/" + item.HinhAnh);
+                    var finalPrice = Model.GiaSP * (100 - item.Discount) / 100;
+
+                    <img src="@imgUrl"
+                         class="thumb-img @(item.MaCTSP == defaultVariant?.MaCTSP ? "active" : "")"
+                         data-mactsp="@item.MaCTSP"
+                         data-img="@imgUrl"
+                         data-color="@item.MauSP"
+                         data-size="@item.SizeSP"
+                         data-stock="@item.SoLuongTon"
+                         data-discount="@item.Discount"
+                         data-price="@finalPrice.ToString("0.##", CultureInfo.InvariantCulture)"
+                         alt="@Model.TenSP" />
+                }
+            </div>
+
+            <div class="main-image-box">
+                <img id="mainProductImage"
+                     src="@mainImage"
+                     class="main-product-image"
+                     alt="@Model.TenSP" />
+            </div>
+        </div>
+
+        <div class="product-info">
+            <h1 class="product-title">@Model.TenSP</h1>
+
+            <div class="product-subtitle">
+                Danh mục: @(Model.DanhMuc != null ? Model.DanhMuc.TenDM : "Chưa có")
+            </div>
+
+            <div class="product-price"
+                 id="productPrice"
+                 data-base-price="@Model.GiaSP.ToString("0.##", CultureInfo.InvariantCulture)">
+                @currentPrice.ToString("N0") đ
+            </div>
+
+            @if (defaultVariant != null && defaultVariant.Discount > 0)
+            {
+                <div class="product-old-price" id="productOldPrice">
+                    @Model.GiaSP.ToString("N0") đ
+                </div>
+            }
+            else
+            {
+                <div class="product-old-price" id="productOldPrice"></div>
+            }
+
+            <div class="product-section">
+                <div class="section-title">Màu sắc</div>
+                <div class="color-list">
+                    @foreach (var color in colors)
+                    {
+                        <button type="button"
+                                class="color-btn @(color == defaultVariant?.MauSP ? "active" : "")"
+                                data-color="@color">
+                            @color
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <div class="product-section">
+                <div class="section-title">Chọn size</div>
+                <div class="size-list" id="sizeList">
+                    @foreach (var item in variants)
+                    {
+                        var finalPrice = Model.GiaSP * (100 - item.Discount) / 100;
+                        bool showByDefault = item.MauSP == defaultVariant?.MauSP;
+
+                        <button type="button"
+                                class="size-btn @(item.MaCTSP == defaultVariant?.MaCTSP ? "active" : "")"
+                                data-mactsp="@item.MaCTSP"
+                                data-color="@item.MauSP"
+                                data-size="@item.SizeSP"
+                                data-stock="@item.SoLuongTon"
+                                data-discount="@item.Discount"
+                                data-price="@finalPrice.ToString("0.##", CultureInfo.InvariantCulture)"
+                                data-img="@(string.IsNullOrEmpty(item.HinhAnh) ? Url.Content("~/images/products/no-image.png") : Url.Content("~/images/products/" + item.HinhAnh))"
+                                style="display:@(showByDefault ? "inline-flex" : "none")"
+                                @(item.SoLuongTon <= 0 ? "disabled" : "")>
+                            Size @item.SizeSP
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <div class="product-section info-row">
+                <span class="section-title">Màu đang chọn:</span>
+                <span id="selectedColor">@((defaultVariant != null) ? defaultVariant.MauSP : "")</span>
+            </div>
+
+            <div class="product-section info-row">
+                <span class="section-title">Size đang chọn:</span>
+                <span id="selectedSize">@((defaultVariant != null) ? defaultVariant.SizeSP.ToString() : "")</span>
+            </div>
+
+            <div class="product-section info-row">
+                <span class="section-title">Tồn kho:</span>
+                <span id="stockInfo">@((defaultVariant != null) ? defaultVariant.SoLuongTon : 0)</span>
+            </div>
+
+            <div class="product-section info-row">
+                <span class="section-title">Mã chi tiết:</span>
+                <span id="detailCode">@((defaultVariant != null) ? defaultVariant.MaCTSP : "")</span>
+            </div>
+
+            <div class="product-actions">
+                <button type="button" class="btn-main">Thêm vào giỏ</button>
+                <a asp-action="Index" class="btn-sub">Quay lại danh sách</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/product-details.js"></script>
+}

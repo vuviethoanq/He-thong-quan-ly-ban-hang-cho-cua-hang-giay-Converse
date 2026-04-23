@@ -1,0 +1,116 @@
+﻿@model IEnumerable<Converse_NMCNPM.Models.SanPhamCardViewModel>
+
+@{
+    ViewData["Title"] = "Sản phẩm";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string keyword = ViewBag.Keyword ?? "";
+    string sortOrder = ViewBag.SortOrder ?? "";
+}
+
+<div class="product-page-header">
+    <h1 class="page-title">Sản phẩm</h1>
+
+    <div class="page-actions">
+        <a asp-action="Create" class="btn-create-sp">Create New</a>
+    </div>
+</div>
+
+<form asp-action="Index" method="get" class="product-toolbar">
+    <div class="search-box">
+        <input type="text"
+               name="keyword"
+               value="@keyword"
+               placeholder="Tìm theo tên sản phẩm hoặc danh mục..." />
+    </div>
+
+    <div class="sort-box">
+        <select name="sortOrder">
+            <option value="">Sắp xếp mặc định</option>
+            <option value="name_asc" selected="@(sortOrder == "name_asc")">Tên A-Z</option>
+            <option value="name_desc" selected="@(sortOrder == "name_desc")">Tên Z-A</option>
+            <option value="price_asc" selected="@(sortOrder == "price_asc")">Giá tăng dần</option>
+            <option value="price_desc" selected="@(sortOrder == "price_desc")">Giá giảm dần</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn-filter">Áp dụng</button>
+</form>
+
+<div class="product-grid">
+    @foreach (var item in Model)
+    {
+        var imageUrl = !string.IsNullOrEmpty(item.HinhAnh)
+        ? Url.Content("~/images/products/" + item.HinhAnh)
+        : Url.Content("~/images/products/no-image.png");
+
+        <a asp-controller="ChiTietSPs"
+           asp-action="Index"
+           asp-route-id="@item.MaSP"
+           class="product-card-link">
+            <div class="product-card">
+                <div class="product-image-box">
+                    <img src="@imageUrl" alt="@item.TenSP" class="product-card-image" />
+                </div>
+
+                <div class="product-card-body">
+                    @if (item.DiscountLonNhat > 0)
+                    {
+                        <div class="product-badge">Giảm @item.DiscountLonNhat.ToString("N0")%</div>
+                    }
+                    else
+                    {
+                        <div class="product-badge neutral">Sản phẩm</div>
+                    }
+
+                    <div class="product-name">@item.TenSP</div>
+                    <div class="product-category">@item.TenDM</div>
+                    <div class="product-price">@item.GiaHienThi.ToString("N0")đ</div>
+
+                    @if (item.DiscountLonNhat > 0)
+                    {
+                        <div class="product-old-price">@item.GiaGoc.ToString("N0")đ</div>
+                    }
+                    else
+                    {
+                        <div class="product-old-price">&nbsp;</div>
+                    }
+                </div>
+            </div>
+        </a>
+    }
+</div>
+
+@if (totalPages > 1)
+{
+    <div class="pagination-wrap">
+        @if (currentPage > 1)
+        {
+            <a asp-action="Index"
+               asp-route-page="@(currentPage - 1)"
+               asp-route-keyword="@keyword"
+               asp-route-sortOrder="@sortOrder"
+               class="page-btn">«</a>
+        }
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <a asp-action="Index"
+               asp-route-page="@i"
+               asp-route-keyword="@keyword"
+               asp-route-sortOrder="@sortOrder"
+               class="page-btn @(i == currentPage ? "active" : "")">
+                @i
+            </a>
+        }
+
+        @if (currentPage < totalPages)
+        {
+            <a asp-action="Index"
+               asp-route-page="@(currentPage + 1)"
+               asp-route-keyword="@keyword"
+               asp-route-sortOrder="@sortOrder"
+               class="page-btn">»</a>
+        }
+    </div>
+}

@@ -1,0 +1,133 @@
+﻿@model Converse_NMCNPM.Models.ThongKeViewModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Thống kê";
+    string filter = ViewBag.Filter ?? "month";
+}
+
+<h1>Thống kê</h1>
+
+<div class="d-flex justify-content-end mb-3">
+    <form method="get" asp-controller="ThongKe" asp-action="Index" class="d-flex align-items-center gap-2">
+        <label class="fw-semibold">Hiển thị theo:</label>
+        <select name="filter" class="form-select" style="width: 180px;" onchange="this.form.submit()">
+            <option value="day" selected="@(filter == "day")">Ngày</option>
+            <option value="week" selected="@(filter == "week")">Tuần</option>
+            <option value="month" selected="@(filter == "month")">Tháng</option>
+            <option value="year" selected="@(filter == "year")">Năm</option>
+        </select>
+    </form>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12 mb-4">
+        <div class="card p-4">
+            <h4 class="mb-3">Biểu đồ giờ làm của từng nhân viên</h4>
+            <div style="height: 420px;">
+                <canvas id="gioLamChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mb-4">
+        <div class="card p-4">
+            <h4 class="mb-3">Biểu đồ doanh thu</h4>
+            <div style="height: 420px;">
+                <canvas id="doanhThuChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mb-4">
+        <div class="card p-4">
+            <h4 class="mb-3">Biểu đồ số sản phẩm bán được</h4>
+            <div style="height: 520px;">
+                <canvas id="sanPhamChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const nhanVienLabels = @Html.Raw(JsonSerializer.Serialize(Model.NhanVienLabels));
+        const nhanVienHours = @Html.Raw(JsonSerializer.Serialize(Model.NhanVienHours));
+
+        const doanhThuLabels = @Html.Raw(JsonSerializer.Serialize(Model.DoanhThuLabels));
+        const doanhThuValues = @Html.Raw(JsonSerializer.Serialize(Model.DoanhThuValues));
+
+        const sanPhamLabels = @Html.Raw(JsonSerializer.Serialize(Model.SanPhamLabels));
+        const sanPhamSoLuong = @Html.Raw(JsonSerializer.Serialize(Model.SanPhamSoLuong));
+
+        new Chart(document.getElementById('gioLamChart'), {
+            type: 'bar',
+            data: {
+                labels: nhanVienLabels,
+                datasets: [{
+                    label: 'Tổng giờ làm',
+                    data: nhanVienHours,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('doanhThuChart'), {
+            type: 'line',
+            data: {
+                labels: doanhThuLabels,
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: doanhThuValues,
+                    fill: false,
+                    tension: 0.25,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('sanPhamChart'), {
+            type: 'bar',
+            data: {
+                labels: sanPhamLabels,
+                datasets: [{
+                    label: 'Số lượng bán',
+                    data: sanPhamSoLuong,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: true }
+                },
+                scales: {
+                    x: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+}

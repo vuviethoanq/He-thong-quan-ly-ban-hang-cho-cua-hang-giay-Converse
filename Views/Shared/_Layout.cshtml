@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Converse Store</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/sanpham-index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/product-details.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/nhaphang.css" asp-append-version="true" />
+</head>
+<body>
+    @{
+        var user = Context.Session.GetString("User");
+        var role = (Context.Session.GetString("Role") ?? "").Trim();
+        var maNV = Context.Session.GetString("MaNV");
+    }
+
+    <div class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-shoe-prints"></i>
+            <span> CONVERSE</span>
+        </div>
+
+        @if (!string.IsNullOrEmpty(user))
+        {
+            @if (role == "Staff")
+            {
+                <a asp-controller="SanPhams" asp-action="Index">
+                    <i class="fa-solid fa-box-open"></i>
+                    <span>Sản phẩm</span>
+                </a>
+
+                <a asp-controller="GioHang" asp-action="Index">
+                    <i class="fa-solid fa-cart-plus"></i>
+                    <span>Giỏ hàng</span>
+                </a>
+
+                <a asp-controller="DonHangs" asp-action="Index">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Đơn hàng</span>
+                </a>
+
+                <a asp-controller="TaiKhoan" asp-action="DoiMatKhau">
+                    <i class="fa-solid fa-key"></i>
+                    <span>Đổi mật khẩu</span>
+                </a>
+            }
+
+            @if (role == "Admin")
+            {
+                <a asp-controller="DanhSachSP" asp-action="Index">
+                    <i class="fa-solid fa-list"></i>
+                    <span>Danh sách sản phẩm</span>
+                </a>
+
+                <a asp-controller="KhachHangs" asp-action="Index">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Khách hàng</span>
+                </a>
+
+                <a asp-controller="DonHangs" asp-action="Index">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Đơn hàng</span>
+                </a>
+
+                <a asp-controller="NhapHangs" asp-action="Index">
+                    <i class="fa-solid fa-truck-loading"></i>
+                    <span>Nhập hàng</span>
+                </a>
+
+                <a asp-controller="ThongKe" asp-action="Index">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Thống kê</span>
+                </a>
+
+                <a asp-controller="TaiKhoan" asp-action="Index">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>Quản lý tài khoản</span>
+                </a>
+            }
+
+            @if (role == "QuanLyKho")
+            {
+                <a asp-controller="DanhSachSP" asp-action="Index">
+                    <i class="fa-solid fa-list"></i>
+                    <span>Danh sách sản phẩm</span>
+                </a>
+
+                <a asp-controller="NhapHangs" asp-action="Index">
+                    <i class="fa-solid fa-truck-loading"></i>
+                    <span>Nhập hàng</span>
+                </a>
+
+                <a asp-controller="TaiKhoan" asp-action="DoiMatKhau">
+                    <i class="fa-solid fa-key"></i>
+                    <span>Đổi mật khẩu</span>
+                </a>
+            }
+
+            <a asp-controller="TaiKhoan" asp-action="Logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Đăng xuất</span>
+            </a>
+        }
+        else
+        {
+            <a asp-controller="TaiKhoan" asp-action="Login">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                <span>Đăng nhập</span>
+            </a>
+        }
+    </div>
+
+    <div class="main">
+        <div class="topbar">
+            <strong>@ViewData["Title"]</strong>
+            <div>
+                <span>@(user ?? "Guest")</span>
+                <span class="role-badge ms-2">@(string.IsNullOrEmpty(role) ? "No Role" : role)</span>
+            </div>
+        </div>
+
+        <div class="cardx">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

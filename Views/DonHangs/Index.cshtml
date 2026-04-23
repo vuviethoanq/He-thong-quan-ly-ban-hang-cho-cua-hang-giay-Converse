@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Converse_NMCNPM.Models.DonHang>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NgayTao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TongTien)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.KhachHang)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NhanVien)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayTao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TongTien)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.KhachHang.MaKH)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NhanVien.MaNV)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.MaDH">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

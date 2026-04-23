@@ -1,0 +1,29 @@
+﻿@model Converse_NMCNPM.Models.NhanVien
+
+@{
+    ViewData["Title"] = "Chi tiết";
+}
+
+<h2>Chi tiết tài khoản</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Mã NV</th>
+        <td>@Model.MaNV</td>
+    </tr>
+    <tr>
+        <th>Tài khoản</th>
+        <td>@Model.Username</td>
+    </tr>
+    <tr>
+        <th>Mật khẩu</th>
+        <td>@Model.Password</td>
+    </tr>
+    <tr>
+        <th>Vai trò</th>
+        <td>@Model.Role</td>
+    </tr>
+</table>
+
+<a asp-action="Edit" asp-route-id="@Model.MaNV" class="btn btn-warning">Sửa</a>
+<a asp-action="Index" class="btn btn-secondary">Quay lại</a>

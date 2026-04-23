@@ -1,0 +1,62 @@
+﻿@model Converse_NMCNPM.Models.TaoDonHangViewModel
+
+@{
+    ViewData["Title"] = "Tạo đơn hàng";
+    var chiTietSPs = ViewBag.ChiTietSPs as IEnumerable<dynamic>;
+}
+
+<h1>Tạo đơn hàng</h1>
+
+<div class="card p-4 mt-3">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <form asp-action="Create" method="post">
+        <div class="form-group mb-3">
+            <label asp-for="TenKH" class="form-label">Tên khách hàng</label>
+            <input asp-for="TenKH" class="form-control" />
+            <span asp-validation-for="TenKH" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="SDT" class="form-label">Số điện thoại</label>
+            <input asp-for="SDT" class="form-control" />
+            <span asp-validation-for="SDT" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="DiaChi" class="form-label">Địa chỉ</label>
+            <input asp-for="DiaChi" class="form-control" />
+            <span asp-validation-for="DiaChi" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="MaCTSP" class="form-label">Chi tiết sản phẩm</label>
+            <select asp-for="MaCTSP" class="form-control">
+                <option value="">-- Chọn chi tiết sản phẩm --</option>
+                @if (chiTietSPs != null)
+                {
+                    foreach (var item in chiTietSPs)
+                    {
+                        <option value="@item.MaCTSP">@item.HienThi</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="MaCTSP" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="SoLuong" class="form-label">Số lượng</label>
+            <input asp-for="SoLuong" class="form-control" />
+            <span asp-validation-for="SoLuong" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Tạo mới</button>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

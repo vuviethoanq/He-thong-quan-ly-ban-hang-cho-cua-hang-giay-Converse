@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Converse_NMCNPM.Models.SanPham>
+
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+}
+
+<h1>Danh sách sản phẩm</h1>
+
+<div class="card p-4 mt-3">
+    <h4 class="mb-3">Danh sách sản phẩm</h4>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Mã SP</th>
+                <th>Tên SP</th>
+                <th>Danh mục</th>
+                <th>Chi tiết sản phẩm</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MaSP</td>
+                    <td>@item.TenSP</td>
+                    <td>@(item.DanhMuc != null ? item.DanhMuc.TenDM : "")</td>
+                    <td>
+                        <a asp-controller="DanhSachSP"
+                           asp-action="ChiTiet"
+                           asp-route-id="@item.MaSP"
+                           class="btn btn-sm btn-primary">
+                            Xem chi tiết
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

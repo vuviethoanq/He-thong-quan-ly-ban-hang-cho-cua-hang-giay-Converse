@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Converse_NMCNPM.Models.ChiTietNhapHang>
+
+@{
+    ViewData["Title"] = "Chi tiết lịch sử nhập hàng";
+    var nhapHang = ViewBag.NhapHang as Converse_NMCNPM.Models.NhapHang;
+}
+
+<h1>Chi tiết lịch sử nhập hàng</h1>
+
+<div class="card p-4 mt-3">
+    <h4 class="mb-3">Mã nhập hàng: @(nhapHang?.MaNH ?? "")</h4>
+    <p><strong>Nhân viên:</strong> @(nhapHang?.NhanVien != null ? nhapHang.NhanVien.Username : nhapHang?.MaNV)</p>
+    <p><strong>Ngày nhập:</strong> @(nhapHang != null ? nhapHang.NgayNhap.ToString("dd/MM/yyyy HH:mm") : "")</p>
+    <p><strong>Ghi chú:</strong> @nhapHang?.GhiChu</p>
+
+    <table class="table table-bordered table-hover align-middle mt-3">
+        <thead>
+            <tr>
+                <th>Mã CTNH</th>
+                <th>Mã CTSP</th>
+                <th>Sản phẩm</th>
+                <th>Màu sắc</th>
+                <th>Size</th>
+                <th>Số lượng nhập</th>
+                <th>Giá nhập</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MaCTNH</td>
+                    <td>@item.MaCTSP</td>
+                    <td>@(item.ChiTietSP?.SanPham != null ? item.ChiTietSP.SanPham.TenSP : "")</td>
+                    <td>@item.ChiTietSP?.MauSP</td>
+                    <td>@item.ChiTietSP?.SizeSP</td>
+                    <td>@item.SoLuongNhap</td>
+                    <td>@item.GiaNhap.ToString("N0") VNĐ</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="LichSu" class="btn btn-secondary">Quay lại</a>
+</div>

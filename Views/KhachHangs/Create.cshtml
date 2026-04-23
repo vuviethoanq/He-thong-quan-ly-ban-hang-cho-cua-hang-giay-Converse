@@ -1,0 +1,57 @@
+﻿@model Converse_NMCNPM.Models.KhachHang
+
+@{
+    ViewData["Title"] = "Tạo khách hàng";
+}
+
+<h1>Tạo khách hàng</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" id="khachHangForm">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MaKH" class="control-label"></label>
+                <input asp-for="MaKH" class="form-control" id="MaKH" />
+                <span id="MaKHError" class="text-danger"></span>
+                <span asp-validation-for="MaKH" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TenKH" class="control-label"></label>
+                <input asp-for="TenKH" class="form-control" id="TenKH" />
+                <span id="TenKHError" class="text-danger"></span>
+                <span asp-validation-for="TenKH" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="SdtKH" class="control-label"></label>
+                <input asp-for="SdtKH" class="form-control" id="SdtKH" />
+                <span id="SdtKHError" class="text-danger"></span>
+                <span asp-validation-for="SdtKH" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="DiaChiKH" class="control-label"></label>
+                <input asp-for="DiaChiKH" class="form-control" id="DiaChiKH" />
+                <span id="DiaChiKHError" class="text-danger"></span>
+                <span asp-validation-for="DiaChiKH" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Tạo mới" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

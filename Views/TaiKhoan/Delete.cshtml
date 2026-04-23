@@ -1,0 +1,32 @@
+﻿@model Converse_NMCNPM.Models.NhanVien
+
+@{
+    ViewData["Title"] = "Xóa";
+}
+
+<h2>Xóa tài khoản</h2>
+
+<div class="alert alert-danger">
+    Bạn có chắc muốn xóa tài khoản này?
+</div>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Mã NV</th>
+        <td>@Model.MaNV</td>
+    </tr>
+    <tr>
+        <th>Tài khoản</th>
+        <td>@Model.Username</td>
+    </tr>
+    <tr>
+        <th>Vai trò</th>
+        <td>@Model.Role</td>
+    </tr>
+</table>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="MaNV" />
+    <button type="submit" class="btn btn-danger">Xóa</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

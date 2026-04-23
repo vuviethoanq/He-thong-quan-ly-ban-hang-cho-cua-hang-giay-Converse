@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Converse_NMCNPM.Models.NhanVien>
+
+@{
+    ViewData["Title"] = "Tài khoản";
+}
+
+<h2 class="mb-4">Danh sách tài khoản</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">+ Thêm tài khoản</a>
+</p>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Mã NV</th>
+            <th>Tài khoản</th>
+            <th>Vai trò</th>
+            <th width="220"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaNV</td>
+                <td>@item.Username</td>
+                <td>@item.Role</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MaNV" class="btn btn-warning btn-sm">Sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.MaNV" class="btn btn-info btn-sm">Chi tiết</a>
+                    <a asp-action="Delete" asp-route-id="@item.MaNV" class="btn btn-danger btn-sm">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

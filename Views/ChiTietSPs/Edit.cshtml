@@ -1,0 +1,89 @@
+﻿@model Converse_NMCNPM.Models.ChiTietSP
+
+@{
+    ViewData["Title"] = "Sửa chi tiết sản phẩm";
+}
+
+<h1>Sửa chi tiết sản phẩm</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="MaCTSP" />
+
+            <div class="form-group mb-3">
+                <label asp-for="MaSP" class="control-label"></label>
+                <input asp-for="MaSP" class="form-control" readonly />
+                <span asp-validation-for="MaSP" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="SizeSP" class="control-label"></label>
+                <input asp-for="SizeSP" class="form-control" />
+                <span asp-validation-for="SizeSP" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MauSP" class="control-label"></label>
+                <input asp-for="MauSP" class="form-control" />
+                <span asp-validation-for="MauSP" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="SoLuongTon" class="control-label"></label>
+                <input asp-for="SoLuongTon" class="form-control" />
+                <span asp-validation-for="SoLuongTon" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Discount" class="control-label"></label>
+                <input asp-for="Discount" class="form-control" />
+                <span asp-validation-for="Discount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="control-label">Ảnh hiện tại</label>
+                <div>
+                    @if (!string.IsNullOrEmpty(Model.HinhAnh))
+                    {
+                        <img src="~/images/products/@Model.HinhAnh"
+                             alt="@Model.MaCTSP"
+                             style="width:120px; height:120px; object-fit:cover; border:1px solid #ddd; border-radius:8px;" />
+                        <div class="mt-2 text-muted">@Model.HinhAnh</div>
+                    }
+                    else
+                    {
+                        <div class="text-muted">Chưa có ảnh</div>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group mb-4">
+                <label class="control-label">Chọn ảnh mới</label>
+                <input type="file" name="imageFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+            </div>
+
+            <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                <button type="submit" class="btn btn-primary">Save</button>
+
+                <a asp-controller="DanhSachSP"
+                   asp-action="ChiTiet"
+                   asp-route-id="@Model.MaSP"
+                   class="btn btn-secondary">
+                    Back to List
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

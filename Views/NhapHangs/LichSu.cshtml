@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Converse_NMCNPM.Models.NhapHang>
+
+@{
+    ViewData["Title"] = "Lịch sử nhập hàng";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Lịch sử nhập hàng</h1>
+
+    <a asp-controller="NhapHangs"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Quay lại nhập hàng
+    </a>
+</div>
+
+<div class="card p-4 mt-3">
+    <table class="table table-bordered table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Mã nhập hàng</th>
+                <th>Nhân viên</th>
+                <th>Ngày nhập</th>
+                <th>Ghi chú</th>
+                <th>Chi tiết</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MaNH</td>
+                        <td>@(item.NhanVien != null ? item.NhanVien.Username : item.MaNV)</td>
+                        <td>@item.NgayNhap.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@item.GhiChu</td>
+                        <td>
+                            <a asp-controller="NhapHangs"
+                               asp-action="ChiTietLichSu"
+                               asp-route-id="@item.MaNH"
+                               class="btn btn-sm btn-primary">
+                                Xem chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center">Chưa có lịch sử nhập hàng</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

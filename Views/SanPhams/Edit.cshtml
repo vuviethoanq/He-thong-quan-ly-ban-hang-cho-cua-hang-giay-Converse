@@ -1,0 +1,60 @@
+﻿@model Converse_NMCNPM.Models.SanPham
+
+@{
+    ViewData["Title"] = "Sửa sản phẩm";
+}
+
+<h1>Sửa sản phẩm</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" id="sanPhamForm">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaSP" />
+
+            <div class="form-group mb-3">
+                <label asp-for="MaSP" class="control-label"></label>
+                <input asp-for="MaSP" class="form-control" id="MaSP" readonly />
+                <span id="MaSPError" class="text-danger"></span>
+                <span asp-validation-for="MaSP" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TenSP" class="control-label"></label>
+                <input asp-for="TenSP" class="form-control" id="TenSP" />
+                <span id="TenSPError" class="text-danger"></span>
+                <span asp-validation-for="TenSP" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="GiaSP" class="control-label"></label>
+                <input asp-for="GiaSP" class="form-control" id="GiaSP" />
+                <span id="GiaSPError" class="text-danger"></span>
+                <span asp-validation-for="GiaSP" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="MaDM" class="control-label"></label>
+                <select asp-for="MaDM" class="form-control" asp-items="ViewBag.MaDM" id="MaDM">
+                    <option value="">-- Chọn danh mục --</option>
+                </select>
+                <span id="MaDMError" class="text-danger"></span>
+                <span asp-validation-for="MaDM" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

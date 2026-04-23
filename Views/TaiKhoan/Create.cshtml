@@ -1,0 +1,67 @@
+﻿@model Converse_NMCNPM.Models.NhanVien
+
+@{
+    ViewData["Title"] = "Tạo tài khoản";
+}
+
+<h1>Tạo tài khoản</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" id="taiKhoanForm">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="text-danger mb-3">@ViewBag.Error</div>
+            }
+
+            <div class="form-group mb-3">
+                <label asp-for="MaNV" class="control-label"></label>
+                <input asp-for="MaNV" class="form-control" id="MaNV" />
+                <span id="MaNVError" class="text-danger"></span>
+                <span asp-validation-for="MaNV" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" id="Username" />
+                <span id="UsernameError" class="text-danger"></span>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" type="password" class="form-control" id="Password" />
+                <span id="PasswordError" class="text-danger"></span>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Role" class="control-label"></label>
+                <select asp-for="Role" class="form-control" id="Role">
+                    <option value="">-- Chọn quyền --</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Staff">Staff</option>
+                    <option value="QuanLyKho">QuanLyKho</option>
+                </select>
+                <span id="RoleError" class="text-danger"></span>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Tạo mới" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

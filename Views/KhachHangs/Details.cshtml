@@ -1,0 +1,71 @@
+﻿@model Converse_NMCNPM.Models.KhachHang
+
+@{
+    ViewData["Title"] = "Chi tiết khách hàng";
+    var donHangs = ViewBag.DonHangs as List<Converse_NMCNPM.Models.DonHang>;
+    var chiTietDonHangs = ViewBag.ChiTietDonHangs as List<Converse_NMCNPM.Models.ChiTietDonHang>;
+}
+
+<h1>Chi tiết khách hàng</h1>
+
+<div class="card p-4 mt-3">
+    <h4 class="mb-3">Thông tin khách hàng</h4>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-2">Mã KH</dt>
+        <dd class="col-sm-10">@Model.MaKH</dd>
+
+        <dt class="col-sm-2">Tên khách hàng</dt>
+        <dd class="col-sm-10">@Model.TenKH</dd>
+
+        <dt class="col-sm-2">Số điện thoại</dt>
+        <dd class="col-sm-10">@Model.SdtKH</dd>
+
+        <dt class="col-sm-2">Địa chỉ</dt>
+        <dd class="col-sm-10">@Model.DiaChiKH</dd>
+    </dl>
+
+    <h4 class="mt-4 mb-3">Danh sách sản phẩm đã mua</h4>
+
+    <table class="table table-bordered table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Mã đơn hàng</th>
+                <th>Thời gian mua</th>
+                <th>Sản phẩm</th>
+                <th>Màu sắc</th>
+                <th>Size</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (chiTietDonHangs != null && chiTietDonHangs.Any())
+            {
+                @foreach (var item in chiTietDonHangs)
+                {
+                    <tr>
+                        <td>@item.MaDH</td>
+                        <td>@item.DonHang?.NgayTao.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>@(item.ChiTietSP?.SanPham?.TenSP ?? "")</td>
+                        <td>@item.ChiTietSP?.MauSP</td>
+                        <td>@item.ChiTietSP?.SizeSP</td>
+                        <td>@item.SoLuong</td>
+                        <td>@item.Gia.ToString("N0") VNĐ</td>
+                        <td>@((item.SoLuong * item.Gia).ToString("N0")) VNĐ</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center">Khách hàng chưa mua sản phẩm nào</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div>

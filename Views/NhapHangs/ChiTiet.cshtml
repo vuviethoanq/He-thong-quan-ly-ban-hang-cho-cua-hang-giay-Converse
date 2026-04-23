@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Converse_NMCNPM.Models.ChiTietSP>
+
+@{
+    ViewData["Title"] = "Chi tiết nhập hàng";
+    var sanPham = ViewBag.SanPham as Converse_NMCNPM.Models.SanPham;
+}
+
+<h1>Chi tiết nhập hàng</h1>
+
+<div class="card p-4 mt-3">
+    <h4 class="mb-3">
+        Sản phẩm: @(sanPham != null ? sanPham.TenSP : "")
+    </h4>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <table class="table table-bordered table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Hình ảnh</th>
+                <th>Mã CTSP</th>
+                <th>Màu sắc</th>
+                <th>Size</th>
+                <th>Tồn kho</th>
+                <th>Giá bán</th>
+                <th>Yêu cầu nhập hàng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var giaSauGiam = (sanPham != null)
+                ? sanPham.GiaSP * (100 - item.Discount) / 100
+                : 0;
+
+                var imageUrl = !string.IsNullOrEmpty(item.HinhAnh)
+                ? Url.Content("~/images/products/" + item.HinhAnh)
+                : Url.Content("~/images/products/no-image.png");
+
+                <tr>
+                    <td style="width:120px;">
+                        <img src="@imageUrl"
+                             alt="@item.MaCTSP"
+                             style="width:80px; height:80px; object-fit:cover; border-radius:8px; border:1px solid #ddd;" />
+                    </td>
+                    <td>@item.MaCTSP</td>
+                    <td>@item.MauSP</td>
+                    <td>@item.SizeSP</td>
+                    <td>@item.SoLuongTon</td>
+                    <td>@giaSauGiam.ToString("N0") VNĐ</td>
+                    <td style="min-width:320px;">
+                        <form asp-controller="NhapHangs" asp-action="GuiYeuCauNhap" method="post">
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" name="MaCTSP" value="@item.MaCTSP" />
+                            <input type="hidden" name="MaSP" value="@item.MaSP" />
+
+                            <div class="mb-2">
+                                <label class="form-label">Số lượng nhập</label>
+                                <input type="number" name="SoLuongNhap" class="form-control" min="1" required />
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label">Giá nhập</label>
+                                <input type="number" step="0.01" name="GiaNhap" class="form-control" min="0" required />
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label">Ghi chú</label>
+                                <input type="text" name="GhiChu" class="form-control" placeholder="Ghi chú thêm nếu có" />
+                            </div>
+
+                            <button type="submit" class="btn btn-success btn-sm">
+                                Gửi yêu cầu nhập
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</div>

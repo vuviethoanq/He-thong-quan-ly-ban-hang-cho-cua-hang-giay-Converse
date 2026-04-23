@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Converse_NMCNPM.Models.SanPham>
+
+@{
+    ViewData["Title"] = "Nhập hàng";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Nhập hàng</h1>
+
+    <a asp-controller="NhapHangs"
+       asp-action="LichSu"
+       class="btn btn-outline-primary">
+        Lịch sử nhập hàng
+    </a>
+</div>
+
+<div class="card p-4 mt-3">
+    <h4 class="mb-3">Danh sách sản phẩm</h4>
+
+    <table class="table table-bordered table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Mã SP</th>
+                <th>Tên SP</th>
+                <th>Danh mục</th>
+                <th>Gửi yêu cầu</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MaSP</td>
+                    <td>@item.TenSP</td>
+                    <td>@(item.DanhMuc != null ? item.DanhMuc.TenDM : "")</td>
+                    <td>
+                        <a asp-controller="NhapHangs"
+                           asp-action="ChiTiet"
+                           asp-route-id="@item.MaSP"
+                           class="btn btn-sm btn-primary">
+                            Gửi yêu cầu
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
