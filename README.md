@@ -1,18 +1,18 @@
-# 🛒 E-Commerce Website
+# 🖥️ Quản lý sản phẩm
 
 ## 📌 Giới thiệu
-Website bán hàng với giao diện thân thiện, hỗ trợ quản lý sản phẩm và người dùng.
+Ứng dụng quản lý sản phẩm với các chức năng CRUD.
 
 ## 🚀 Công nghệ
-- HTML, CSS, JavaScript
-- ASP.NET Web Forms (C#)
+- C#
+- Windows Forms
+- SQL Server
 
 ## ⚙️ Chức năng
-- Hiển thị danh sách sản phẩm
-- Thêm / sửa / xóa sản phẩm
-- Đăng nhập / đăng ký
-- Quản lý đơn hàng
+- Thêm / sửa / xóa dữ liệu
+- Tìm kiếm sản phẩm
+- Kết nối database
 
 ## 👨‍💻 Vai trò
-- Thiết kế UI
-- Xây dựng logic backend
+- Thiết kế giao diện
+- Xử lý dữ liệu
